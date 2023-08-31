@@ -28,12 +28,13 @@ public:
         this->width = width;
         this->height = height;
 
-        //std::srand(std::time(nullptr));
+        std::srand(std::time(nullptr));
 
         int x = rand() % width;
         int y = rand() % height;
         pair<int,int> p(x,y);
         snake.push_back(p);
+        appleGen();
 
     }
 
@@ -163,7 +164,7 @@ public:
         }
     }
 };
-
+/*
 int main(void) {
 
     SnakeGame sg(6, 6);
@@ -213,3 +214,4 @@ int main(void) {
 
     return 0;
 }
+*/
