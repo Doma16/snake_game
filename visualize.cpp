@@ -51,13 +51,34 @@ int main(void) {
     int offX = 400;
     int offY = 0;
 
+    float time = 0;
+    float move_time = 0.3;
+
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
+        //input
+        if(IsKeyPressed(KEY_UP)) {
+            sg.change("up");
+        }
+        if(IsKeyPressed(KEY_RIGHT)) {
+            sg.change("right");
+        }
+        if(IsKeyPressed(KEY_DOWN)) {
+            sg.change("down");
+        }
+        if(IsKeyPressed(KEY_LEFT)) {
+            sg.change("left");
+        }
 
-        sg.change("up");
+        //update
+        time += GetFrameTime();
+        if (time > move_time) {
+            sg.update();
+            time -= move_time;
+        }
 
-
+        //draw
         BeginDrawing();
         ClearBackground(BLACK);
 
