@@ -5,6 +5,7 @@
 #include<iostream>
 #include<ctime>
 #include<set>
+#include<string>
 using namespace std;
 
 class SnakeGame {
@@ -15,6 +16,9 @@ public:
     vector<int> grid;
     pair<int,int> apple;
 
+    bool finished = false;
+    int direction = -1; // 0, 1, 2, 3
+
     SnakeGame(int width, int height) {
         for (int i = 0; i < width * height; ++i) {
             grid.push_back(0);
@@ -23,7 +27,7 @@ public:
         this->width = width;
         this->height = height;
 
-        std::srand(std::time(nullptr));
+        //std::srand(std::time(nullptr));
 
         int x = rand() % width;
         int y = rand() % height;
@@ -53,20 +57,143 @@ public:
         apple = *iter;
     }
 
-    void update() {
-        if (snake[0] == apple) {
+    void checkFinished() {
+        pair<int,int> head = snake.front();
+        int x = head.first;
+        int y = head.second;
+
+        if (x < 0 or x >= width) {
+            finished = true;
+            return;
+        }
+
+        if (y < 0 or y >= height) {
+            finished = true;
+            return;
+        }
+
+        for(auto i = snake.begin(); i != snake.end(); ++i) {
+            if (head == *i) {
+                finished = true;
+                return;
+            }
         }
     }
 
-    
+    void update() {
+        if (!finished && direction != -1) {
+            pair<int, int> head; 
+            head = snake.front();
+            switch (direction)
+            {
+            case 0: /* up */
+                head = move(head, 0, -1);
+                break;
+            case 1: /* right */
+                head = move(head, 1, 0);
+                break;
+            case 2: /* down */
+                head = move(head, 0, 1);
+                break;
+            case 3: /* left */
+                head = move(head, -1, 0);
+                break;
+            default:
+                /* no move */
+                break;
+            }
+
+            if (apple == head) {
+                appleGen();
+            } else {
+                snake.pop_back();
+            }
+            snake.push_front(head);
+        }
+    }
+
+    void printSnake() {
+        for(auto i = snake.begin(); i != snake.end(); ++i) {
+            cout << i->first << ", " << i->second << endl;
+        }
+    }
+
+    pair<int,int> move(pair<int,int> curr, int x, int y) {
+        curr.first += x;
+        curr.second += y;
+        return curr;
+    }
+
+    void draw() {
+        string out;
+        string signs = "#os";
+        for(int i = 0; i < width; ++i) {
+            for(int j = 0; j < height; ++j) {
+                out += signs.at(grid.at(j*width + i));
+                out += " ";
+            }
+            out.append("\n");
+        }
+        
+        string symbol(1, signs.at(1));
+        out.replace(apple.first * 2 + apple.second * (2*width+1), 1, symbol);
+
+        for (auto i = snake.begin(); i != snake.end(); ++i) {
+            string sym(1,signs.at(2));
+            out.replace(i->first * 2 + i->second * (2*width +1), 1, sym);
+        }
+
+        cout << out;
+    }
 
 };
 
 int main(void) {
 
-    SnakeGame sg(8, 8);
+    SnakeGame sg(6, 6);
 
     sg.appleGen();
-    
+    sg.draw();
+
+    cout << endl;
+
+    sg.update();
+    sg.direction = 0;
+    sg.update();   
+    sg.draw();
+    cout << endl;
+
+    sg.update();
+    sg.draw();
+
+    cout << endl;
+    sg.direction = 3;
+    sg.update();
+    sg.draw();
+
+    cout << endl;
+    sg.direction = 2;
+    sg.update();
+    sg.draw(); 
+    cout << endl;
+
+    sg.update();
+    sg.draw(); 
+    cout << endl;
+
+    sg.update();
+    sg.draw(); 
+    cout << endl;
+
+    sg.direction = 1;
+    sg.update();
+    sg.draw(); 
+    cout << endl;
+
+    sg.update();
+    sg.draw(); 
+    cout << endl;
+
+
     return 0;
 }
