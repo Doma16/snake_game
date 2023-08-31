@@ -6,6 +6,7 @@
 #include<ctime>
 #include<set>
 #include<string>
+#include<map>
 using namespace std;
 
 class SnakeGame {
@@ -146,6 +147,21 @@ public:
         cout << out;
     }
 
+    bool is_finished() {
+        return finished;
+    }
+
+    void change(string to) {
+        map<string, int> calc{{"up", 0},{"right", 1},{"down", 2},{"left", 3}};
+        try
+        {
+            direction = calc.at(to);
+        }
+        catch(const std::exception& e)
+        {
+            direction = -1;
+        }
+    }
 };
 
 int main(void) {
@@ -158,7 +174,7 @@ int main(void) {
     cout << endl;
 
     sg.update();
-    sg.direction = 0;
+    sg.change("up");
     sg.update();   
     sg.draw();
     cout << endl;
