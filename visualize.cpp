@@ -22,15 +22,14 @@ void drawApple(pair<int, int> apple, int width, int height, int offX, int offY, 
     DrawRectangleRounded(rect, 1, 1, RED);
 }   
 
-void drawSnake(deque<pair<int,int>> snake, int width, int height, int offX, int offY, int margin)  {
+void drawSnake(deque<pair<int,int>> snake, int width, int height, int offX, int offY, int margin, Color s_color)  {
     for(auto i = snake.begin(); i != snake.end(); ++i) {
         Rectangle rect;
         rect.height = height - 2 * margin;
         rect.width = width - 2 * margin;
         rect.x = offX + i->first * width - margin;
         rect.y = offY + i->second * height + margin;
-        Color green = {10,150,10,255};
-        DrawRectangleRounded(rect, 0.8, 1, green);
+        DrawRectangleRounded(rect, 0.8, 1, s_color);
     }
 }
 
@@ -50,6 +49,9 @@ int main(void) {
     int margin = 5;
     int offX = 400;
     int offY = 0;
+
+    Color s_green = {10,150,10,255};
+    Color dead_snake = {20,60,20,255};
 
     float time = 0;
     float move_time = 0.3;
@@ -72,6 +74,7 @@ int main(void) {
         }
 
         //update
+
         time += GetFrameTime();
         if (time > move_time) {
             sg.update();
@@ -84,7 +87,14 @@ int main(void) {
 
         drawGrid(grid_x, grid_y, offX, offY, block_width, block_height, margin);
         drawApple(sg.apple, block_width, block_height, offX, offY, margin);
-        drawSnake(sg.snake, block_width, block_height, offX, offY, margin);
+        if (!sg.finished) {
+            drawSnake(sg.snake, block_width, block_height, offX, offY, margin, s_green);
+        } else {
+            drawSnake(sg.snake, block_width, block_height, offX, offY, margin, dead_snake);
+        }
+
+        DrawFPS(margin,margin);
+        DrawText(TextFormat("Score: %i", sg.score),margin,margin+100, 20, RED);
         
         EndDrawing();
     }

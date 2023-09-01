@@ -16,6 +16,7 @@ public:
     deque<pair<int,int>> snake;
     vector<int> grid;
     pair<int,int> apple;
+    int score;
 
     bool finished = false;
     int direction = -1; // 0, 1, 2, 3
@@ -34,6 +35,8 @@ public:
         int y = rand() % height;
         pair<int,int> p(x,y);
         snake.push_back(p);
+
+        score = 0;
         appleGen();
 
     }
@@ -74,7 +77,7 @@ public:
             return;
         }
 
-        for(auto i = snake.begin(); i != snake.end(); ++i) {
+        for(auto i = ++snake.begin(); i != snake.end(); ++i) {
             if (head == *i) {
                 finished = true;
                 return;
@@ -83,6 +86,7 @@ public:
     }
 
     void update() {
+        checkFinished();
         if (!finished && direction != -1) {
             pair<int, int> head; 
             head = snake.front();
@@ -106,6 +110,7 @@ public:
             }
 
             if (apple == head) {
+                score += 1;
                 appleGen();
             } else {
                 snake.pop_back();
@@ -146,10 +151,6 @@ public:
         }
 
         cout << out;
-    }
-
-    bool is_finished() {
-        return finished;
     }
 
     void change(string to) {
