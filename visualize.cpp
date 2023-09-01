@@ -23,6 +23,7 @@ void drawApple(pair<int, int> apple, int width, int height, int offX, int offY, 
 }   
 
 void drawSnake(deque<pair<int,int>> snake, int width, int height, int offX, int offY, int margin, Color s_color)  {
+    Color head_c = {90,160,40,255};
     for(auto i = snake.begin(); i != snake.end(); ++i) {
         Rectangle rect;
         rect.height = height - 2 * margin;
@@ -31,6 +32,12 @@ void drawSnake(deque<pair<int,int>> snake, int width, int height, int offX, int 
         rect.y = offY + i->second * height + margin;
         DrawRectangleRounded(rect, 0.8, 1, s_color);
     }
+    Rectangle rect;
+    rect.height = height - 2 * margin;
+    rect.width = width - 2 * margin;
+    rect.x = offX + snake.begin()->first * width - margin;
+    rect.y = offY + snake.begin()->second * height + margin;
+    DrawRectangleRounded(rect, 0.8, 1, head_c);
 }
 
 int main(void) {
@@ -40,15 +47,15 @@ int main(void) {
 
     InitWindow(width, height, "Snake");
 
-    int grid_x = 8;
-    int grid_y = 8;
+    int grid_x = 20;
+    int grid_y = 20;
     SnakeGame sg(grid_x, grid_y);
     
-    int block_width = 100;
-    int block_height = 100;
-    int margin = 5;
-    int offX = 400;
-    int offY = 0;
+    int block_width = 30;
+    int block_height = 30;
+    int margin = 3;
+    int offX = 400 + 55 + block_width + margin;
+    int offY = 55 + block_height + margin;
 
     Color s_green = {10,150,10,255};
     Color dead_snake = {20,60,20,255};
@@ -73,8 +80,15 @@ int main(void) {
             sg.change("left");
         }
 
-        //update
+        if(IsKeyPressed(KEY_R)) {
+            sg = SnakeGame(grid_x, grid_y);
+        }
+        if(IsKeyPressed(KEY_P)) {
+            sg.direction = -1;
+        }
+        
 
+        //update
         time += GetFrameTime();
         if (time > move_time) {
             sg.update();
@@ -94,8 +108,15 @@ int main(void) {
         }
 
         DrawFPS(margin,margin);
-        DrawText(TextFormat("Score: %i", sg.score),margin,margin+100, 20, RED);
+        DrawText(TextFormat("Score: %i", sg.score),5,margin+100, 60, WHITE);
+        DrawText(TextFormat("Move up: up key"),5,margin+220, 20, WHITE);
+        DrawText(TextFormat("Move down: down key"),5,margin+240, 20, WHITE);
+        DrawText(TextFormat("Move right: right key"),5,margin+260, 20, WHITE);
+        DrawText(TextFormat("Move left: left key"),5,margin+280, 20, WHITE);
+        DrawText(TextFormat("Reset game: R key"),5,margin+300, 20, WHITE);
+        DrawText(TextFormat("Pause game: P key"),5,margin+320, 20, WHITE);
         
+
         EndDrawing();
     }
     
